@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell($f = \"c:\\\\Users\\\\nohsi\\\\OneDrive - 경희대학교\\\\바탕 화면\\\\HTMLS\\\\예담누님 결혼식 축하 메세지\\\\index.html\"; if \\(Test-Path $f\\) { Write-Host \"EXISTS\"; \\(Get-Item $f\\).Length } else { Write-Host \"NOT FOUND\" })"
+    ]
+  }
+}
