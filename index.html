@@ -26,21 +26,6 @@
       --btn-bg:   #EFEFEF;
     }
 
-    /* ── 다크 모드 ─────────────────────────────── */
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg:      #1C1C1E;
-        --surface: #2C2C2E;
-        --text:    #FFFFFF;
-        --subtext: #AEAEB2;
-        --hint:    #636366;
-        --room-bg: #1A1A1A;
-        --bubble:  #3A3A3C;
-        --border:  #38383A;
-        --tabbar:  #1C1C1E;
-        --btn-bg:  #3A3A3C;
-      }
-    }
 
     /* ── 기본 ──────────────────────────────────── */
     html, body {
@@ -266,6 +251,12 @@
       transition: opacity 0.2s, transform 0.2s;
     }
     .badge.gone { opacity: 0; transform: scale(0); }
+
+    @keyframes bonusSlideIn {
+      from { transform: translateY(-56px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .bonus-new { animation: bonusSlideIn 0.38s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
 
     /* 하단 탭바 */
     .tabbar {
@@ -730,6 +721,31 @@ const members = [
     ],
     verseText: "두 사람이 한 사람보다 나음은 그들이 수고함으로 좋은 상을 얻을 것임이라",
     verseRef: "전도서 4장 9절"
+  },
+  {
+    name: "함유빈",
+    imgSrc: 'yoobin.png',
+    bg: "#43AA8B",
+    congrats: [
+      "예담이 부부의 결혼을 축하합니다!",
+      "안녕 예담아! 예담이 결혼을 축복해주고 싶어서 시온이에게 부탁해서 이 프로젝트에 몰래 합류했어 헤헤 ㅋㅋㅋㅋ결혼 준비로 바쁜 와중에 몽단선을 함께 섬기게 되어 너무 감사하다! 항상 교회에서 밝게 웃고 다니고 열심히 섬기는 모습을 보며 내가 배우는 게 참 많아. 일상에서 신앙을 열심히 지켜나가는 모습을 보며 예담이가 새로운 가정을 얼마나 잘 꾸려갈지 기대돼!"
+    ],
+    verseText: "주님, 참 감사합니다. 이 마음은 기쁨으로 가득 차고, 이 몸도 아무 해를 두려워하지 않는 까닭은, 주님께서 나를 보호하셔서 죽음의 세력이 나의 생명을 삼키지 못하게 하실 것이며 주님의 거룩한 자를 죽음의 세계에 버리지 않으실 것이기 때문입니다. 주님께서 몸소 생명의 길을 나에게 보여 주시니, 주님을 모시고 사는 삶에 기쁨이 넘칩니다. 주님께서 내 오른쪽에 계시니, 이 큰 즐거움이 영원토록 이어질 것입니다.",
+    verseRef: "시편 16장 9-11절",
+    afterVerse: [
+      "예담이의 결혼을 축하하며 어떤 말씀을 전할까 하다 시편 16편을 읽게 되었어. 한 가정을 꾸리는 건 기쁜 일이기도 하지만 동시에 여러 두려움과 걱정도 함께하는 일일 거라 생각해. 하지만 예담이의 가정이 하나님만을 경외하고 하나님 안에 거하면 언제나 어려움 속에서 선하신 길로 인도해주실 거라 믿어. 하나님은 선하신 분이고 예담이와 예담이 남편을 사랑하시는 아버지이시니까🫶🏻 그리고 예담이가 하나님 안에 거하길 선택할 사람이라는 것도 믿어 의심치 않고!",
+      "예담이 인생의 새로운 챕터가 시작되는 시기에 함께해서 너무 감사하고! 예담이의 가정이 하나님 안에서 기쁨으로 가득찬 가정되기를 기도하고 축복해🤍🤍🤍진심으로 결혼 축하해🫶🏻"
+    ]
+  },
+  {
+    name: "한예진",
+    imgSrc: 'yejin.png',
+    bg: "#F4A261",
+    congrats: [
+      "예담 언니, 결혼 진심으로 축하해요! 💍"
+    ],
+    verseText: "내용 준비 중이에요.",
+    verseRef: ""
   }
 ];
 
@@ -739,9 +755,12 @@ const members = [
                  1 = 채팅방 입장(뱃지 1)
                  2 = 말씀 수령 완료(뱃지 0)
 ================================================================ */
+const BASE_COUNT = 6; // 기본 6명 (함유빈·한예진은 보너스)
 let curIdx = -1;
 const readState = new Array(members.length).fill(0);
 const afterVerseShown = new Array(members.length).fill(false);
+let bonusUnlocked = false;
+let bonusAnimated = false;
 
 
 /* ================================================================
@@ -760,9 +779,20 @@ function init() {
 /* ================================================================
    채팅 목록 렌더링
 ================================================================ */
+function makeAvHtml(m, cls) {
+  const img = m.imgSrc ? `<img src="${m.imgSrc}" alt="${m.name}">` : '';
+  return `<div class="${cls}" style="background:${m.bg}">${img}</div>`;
+}
+
 function renderList() {
   const box = document.getElementById('cl-items');
   box.innerHTML = '';
+
+  // 보너스 잠금 해제 확인 (기본 6명 중 4명 이상 읽었을 때)
+  if (!bonusUnlocked) {
+    const readCount = readState.slice(0, BASE_COUNT).filter(s => s >= 1).length;
+    if (readCount >= 4) bonusUnlocked = true;
+  }
 
   // 광고 카드
   const ad = document.createElement('div');
@@ -778,13 +808,40 @@ function renderList() {
   `;
   box.appendChild(ad);
 
-  members.forEach((m, i) => {
+  // 보너스 멤버 (함유빈·한예진) — 광고 아래, 일반멤버 위
+  if (bonusUnlocked) {
+    const animate = !bonusAnimated;
+    if (animate) bonusAnimated = true;
+    members.slice(BASE_COUNT).forEach((m, localIdx) => {
+      const i = BASE_COUNT + localIdx;
+      const unread = 2 - readState[i];
+      const el = document.createElement('div');
+      el.className = 'cl-row' + (animate ? ' bonus-new' : '');
+      if (animate) el.style.animationDelay = `${localIdx * 160}ms`;
+      el.onclick = () => openRoom(i);
+      el.innerHTML = `
+        ${makeAvHtml(m, 'av')}
+        <div class="cl-info">
+          <div class="cl-name">${m.name}</div>
+          <div class="cl-preview">축하 메시지가 도착했어요 💌</div>
+        </div>
+        <div class="cl-meta">
+          <div class="cl-time">오후 10:05</div>
+          <div class="badge ${unread === 0 ? 'gone' : ''}" id="badge-${i}">${unread}</div>
+        </div>
+      `;
+      box.appendChild(el);
+    });
+  }
+
+  // 기본 멤버 (0~5)
+  members.slice(0, BASE_COUNT).forEach((m, i) => {
     const unread = 2 - readState[i];
     const el = document.createElement('div');
     el.className = 'cl-row';
     el.onclick = () => openRoom(i);
     el.innerHTML = `
-      <div class="av" style="background:${m.bg}"><img src="${m.imgSrc}" alt="${m.name}"></div>
+      ${makeAvHtml(m, 'av')}
       <div class="cl-info">
         <div class="cl-name">${m.name}</div>
         <div class="cl-preview">축하 메시지가 도착했어요 💌</div>
@@ -837,7 +894,7 @@ function renderMsgs(i) {
 
     <!-- ── 축하 멘트 말풍선 ── -->
     <div class="msg-row">
-      <div class="msg-av" style="background:${m.bg}"><img src="${m.imgSrc}" alt="${m.name}"></div>
+      ${makeAvHtml(m, 'msg-av')}
       <div class="msg-col">
         <div class="msg-sender">${m.name}</div>
         ${m.congrats.map(txt => `
@@ -862,7 +919,7 @@ function renderMsgs(i) {
         </div>
         <!-- 하단 버튼 영역 -->
         <div class="vc-body">
-          <div class="vc-note">말씀 보내는 분이 받는 분을 생각하면서 선정했어요.</div>
+          <div class="vc-note">${m.name} 님이 받는 분을 생각하면서 선정했어요.</div>
           <button class="vc-btn ${done ? 'done' : ''}" onclick="receiveVerse(${i})">
             ${done ? '✅ 말씀 받기 완료' : '말씀 받기'}
           </button>
@@ -885,7 +942,7 @@ function renderMsgs(i) {
     <!-- 말씀 수령 후 추가 멘트 (재방문 시 표시) -->
     ${afterVerseShown[i] && m.afterVerse ? `
       <div class="msg-row">
-        <div class="msg-av" style="background:${m.bg}"><img src="${m.imgSrc}" alt="${m.name}"></div>
+        ${makeAvHtml(m, 'msg-av')}
         <div class="msg-col">
           <div class="msg-sender">${m.name}</div>
           ${m.afterVerse.map(txt => `
@@ -976,7 +1033,7 @@ function appendAfterVerse(i) {
   const row = document.createElement('div');
   row.className = 'msg-row';
   row.innerHTML = `
-    <div class="msg-av" style="background:${m.bg}"><img src="${m.imgSrc}" alt="${m.name}"></div>
+    ${makeAvHtml(m, 'msg-av')}
     <div class="msg-col">
       <div class="msg-sender">${m.name}</div>
       ${m.afterVerse.map(txt => `
