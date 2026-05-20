@@ -133,7 +133,7 @@
     /* 헤더 */
     .cl-hdr {
       flex-shrink: 0;
-      padding: 52px 18px 12px;
+      padding: calc(env(safe-area-inset-top, 0px) + 12px) 18px 12px;
       background: var(--surface);
       display: flex;
       align-items: center;
@@ -626,6 +626,14 @@
     </div>
   </div>
 
+  <!-- 광고 팝업 -->
+  <div id="ad-popup" onclick="document.getElementById('ad-popup').style.display='none'" style="display:none; position:absolute; inset:0; z-index:3000; background:rgba(0,0,0,0.45); align-items:center; justify-content:center;">
+    <div onclick="event.stopPropagation()" style="background:var(--surface); border-radius:18px; padding:36px 28px 22px; width:78%; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,0.22);">
+      <div style="font-size:22px; font-weight:800; color:var(--text); line-height:1.7; letter-spacing:-0.3px;">그건 바로<br>최! 예! 담!</div>
+      <button onclick="document.getElementById('ad-popup').style.display='none'" style="margin-top:22px; width:100%; padding:13px; background:var(--yellow); border:none; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; color:#000;">확인</button>
+    </div>
+  </div>
+
 </div><!-- #app -->
 
 <script>
@@ -657,10 +665,13 @@ const members = [
     bg: "#FF85A1",
     congrats: [
       "안뇽 예담쓰!",
-      "대학생때 새가족으로 처음 만나고 5년만에 몽골 선교팀으로 다시 만나게 되어 신기했는데, 벌써 결혼까지 한다니!! 정말 축하해!!!결혼 준비하랴, 몽단선 준비하랴 너무 정신없을거 같은데 힘든 부분 있으면 언제든 말하고, 결혼식 무사히 잘 끝내고 보자구용~~~~! 결혼 선배로서 잘 부탁해! 다시 한번 더 결혼 축하하고, 행복한 믿음의 가정되기를 바랄께 안뇽 💕🙌"
+      "대학생때 새가족으로 처음 만나고 5년만에 몽골 선교팀으로 다시 만나게 되어 신기했는데, 벌써 결혼까지 한다니!! 정말 축하해!!!결혼 준비하랴, 몽단선 준비하랴 너무 정신없을거 같은데 힘든 부분 있으면 언제든 말하고, 결혼식 무사히 잘 끝내고 보자구용~~~~! 결혼 선배로서 잘 부탁해!"
     ],
     verseText: "나의 사랑하는 자가 내게 말하여 이르기를 나의 사랑, 내 어여쁜 자야 일어나서 함께 가자",
-    verseRef: "아가서 2장 10절"
+    verseRef: "아가서 2장 10절",
+    afterVerse: [
+      "다시 한번 더 결혼 축하하고, 행복한 믿음의 가정되기를 바랄께 안뇽 💕🙌"
+    ]
   },
   {
     name: "유희원",
@@ -668,10 +679,13 @@ const members = [
     bg: "#F5C518",
     congrats: [
       "예담!! 결혼 너무너무 축하해~! 일도 하구, 선교도 하구, 임원도 하느라 정신없고 바쁠텐데 결혼까지... 정말 대단하구 멋있어ㅋㅋㅋ",
-      "나랑 비슷한 나이인데 결혼 한다고 하니까 되게 어른스럽고 더 대단하게 느껴져...! 어린이 사역 같이 준비하게 돼서 넘 감사하구, 바쁜 중에 잘 섬겨줘서 부팀장으로서 아주 든든하고 힘이 된답니당🫠 아니 그리구 결혼 사진 너무 상큼하고 이쁘더라...!!! 다가오는 결혼도 너무너무 축하하구 행복하길 바랍니당 하나님이 기뻐하시는 믿음의 가정으로 행복하길 바라~~🩷"
+      "나랑 비슷한 나이인데 결혼 한다고 하니까 되게 어른스럽고 더 대단하게 느껴져...! 어린이 사역 같이 준비하게 돼서 넘 감사하구, 바쁜 중에 잘 섬겨줘서 부팀장으로서 아주 든든하고 힘이 된답니당🫠"
     ],
     verseText: "사랑은 언제나 오래 참고 사랑은 온유하며 시기하지 아니하며 사랑은 자랑하지 아니하며 교만하지 아니하며 무례히 행하지 아니하며 자기의 유익을 구하지 아니하며 성내지 아니하며 악한 것을 생각하지 아니하며 불의를 기뻐하지 아니하며 진리와 함께 기뻐하고 모든 것을 참으며 모든 것을 믿으며 모든 것을 바라며 모든 것을 견디느니라",
-    verseRef: "고린도전서 13장 4-7절"
+    verseRef: "고린도전서 13장 4-7절",
+    afterVerse: [
+      "아니 그리구 결혼 사진 너무 상큼하고 이쁘더라...!!! 다가오는 결혼도 너무너무 축하하구 행복하길 바랍니당 하나님이 기뻐하시는 믿음의 가정으로 행복하길 바라~~🩷"
+    ]
   },
   {
     name: "김지원",
@@ -689,11 +703,16 @@ const members = [
     imgSrc: "woolim.png",
     bg: "#4D96FF",
     congrats: [
-      "예담 언니! 드디어 결혼이에요!! 너무너무 축하드립니다 🎊 행복하게 잘 사세요!",
-      "두 분이 서로 사랑하며 아껴주는 멋진 부부가 되실 거라 믿어요 💑"
+      "예담 누나께,",
+      "결혼 진심으로 축하해요!",
+      "알게 된 지 얼마 안 됐지만, 함께 몽골 사역을 준비하면서 누나의 능력과 멋진 모습을 볼 수 있었어요. 그 모습을 보면서 하나님께서 정말 알맞은 짝을 주셨구나 싶었어요. 하나님이 주신 소중한 선물과 함께 건강하고 부족함 없이, 평생 행복한 결혼 생활 이어가시길 바라요."
     ],
-    verseText: "하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 그를 믿는 자마다 멸망하지 않고 영생을 얻게 하려 하심이라",
-    verseRef: "요한복음 3장 16절"
+    verseText: "사랑은 언제나 오래 참고 사랑은 온유하며 시기하지 아니하며 사랑은 자랑하지 아니하며 교만하지 아니하며 무례히 행하지 아니하며 자기의 유익을 구하지 아니하며 성내지 아니하며 악한 것을 생각하지 아니하며 불의를 기뻐하지 아니하며 진리와 함께 기뻐하고 모든 것을 참으며 모든 것을 믿으며 모든 것을 바라며 모든 것을 견디느니라",
+    verseRef: "고린도전서 13장 4-7절",
+    afterVerse: [
+      "두 분의 결혼 생활이 이 말씀처럼 사랑으로 가득하길, 그리고 함께 몽골 사역도 무사히 잘 마무리하길 바라며 온 마음으로 축복해요!",
+      "우림 드림"
+    ]
   },
   {
     name: "우성원",
@@ -715,6 +734,8 @@ const members = [
 ================================================================ */
 let curIdx = -1;
 const readState = new Array(members.length).fill(0);
+const afterVerseShown = new Array(members.length).fill(false);
+
 
 /* ================================================================
    초기화 — 스플래시 1.5초 후 채팅 목록 전환
@@ -739,7 +760,7 @@ function renderList() {
   // 광고 카드
   const ad = document.createElement('div');
   ad.className = 'ad-banner';
-  ad.onclick = () => alert('앗!! 거울을 준비하지 못했어요 ㅜ.ㅜ');
+  ad.onclick = () => { document.getElementById('ad-popup').style.display = 'flex'; };
   ad.innerHTML = `
     <span class="ad-tag">광고</span>
     <div class="ad-icon">📢</div>
@@ -853,6 +874,22 @@ function renderMsgs(i) {
         <span class="sys-bubble">말씀을 받았어요 💌</span>
       </div>
     ` : ''}
+
+    <!-- 말씀 수령 후 추가 멘트 (재방문 시 표시) -->
+    ${afterVerseShown[i] && m.afterVerse ? `
+      <div class="msg-row">
+        <div class="msg-av" style="background:${m.bg}"><img src="${m.imgSrc}" alt="${m.name}"></div>
+        <div class="msg-col">
+          <div class="msg-sender">${m.name}</div>
+          ${m.afterVerse.map(txt => `
+            <div class="bline">
+              <div class="bubble">${txt}</div>
+              <div class="btime">오후 10:02</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    ` : ''}
   `;
 }
 
@@ -889,23 +926,62 @@ function receiveVerse(i) {
    팝업 닫기
 ================================================================ */
 function closePopup() {
-  // 팝업 페이드 아웃
   document.getElementById('vp').classList.remove('show');
 
-  // 봉투가 열려 있으면 슬라이드 다운
   const envOv = document.getElementById('env-ov');
-  if (envOv.classList.contains('show')) {
+  const envWasOpen = envOv.classList.contains('show');
+  if (envWasOpen) {
     setTimeout(() => envOv.classList.remove('show'), 200);
   }
 
-  // 카드 버튼 상태 갱신
   if (curIdx >= 0) {
+    const savedIdx = curIdx;
+
+    // 카드 버튼 상태 + 시스템 메시지 갱신
     setTimeout(() => {
-      renderMsgs(curIdx);
+      if (curIdx !== savedIdx) return;
+      renderMsgs(savedIdx);
       const msgs = document.getElementById('msgs');
       msgs.scrollTop = msgs.scrollHeight;
     }, 420);
+
+    // 추가 멘트: 봉투 투명해지는 시점(~500ms) + 150ms 후 등장
+    const m = members[savedIdx];
+    if (m.afterVerse && readState[savedIdx] >= 2 && !afterVerseShown[savedIdx]) {
+      const delay = envWasOpen ? 650 : 150;
+      setTimeout(() => {
+        if (curIdx !== savedIdx) return;
+        appendAfterVerse(savedIdx);
+      }, delay);
+    }
   }
+}
+
+/* ================================================================
+   말씀 수령 후 추가 멘트 DOM 추가
+================================================================ */
+function appendAfterVerse(i) {
+  afterVerseShown[i] = true;
+  const m = members[i];
+  const msgs = document.getElementById('msgs');
+  if (!msgs) return;
+
+  const row = document.createElement('div');
+  row.className = 'msg-row';
+  row.innerHTML = `
+    <div class="msg-av" style="background:${m.bg}"><img src="${m.imgSrc}" alt="${m.name}"></div>
+    <div class="msg-col">
+      <div class="msg-sender">${m.name}</div>
+      ${m.afterVerse.map(txt => `
+        <div class="bline">
+          <div class="bubble">${txt}</div>
+          <div class="btime">오후 10:02</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  msgs.appendChild(row);
+  setTimeout(() => { msgs.scrollTop = msgs.scrollHeight; }, 50);
 }
 
 /* ================================================================
